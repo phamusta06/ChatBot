@@ -95,7 +95,7 @@ export const userDetails = async (req: CustomRequest, res: Response) => {
     if (!req.id) {
       return res.status(401).json({ message: "Unauthorized", error: true });
     }
-    const user = await User.findById(req.id).select("-password").populate('Conversation');
+    const user = await User.findById(req.id).select("-password");
 
     if (!user) {
       return res.status(401).json({ message: "User not found", logout: true });
