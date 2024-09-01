@@ -18,13 +18,6 @@ const UserSchema=new mongoose.Schema(
         required: true
 
     },
-    conversations: [
-       {
-         type:mongoose.Schema.ObjectId,
-        ref: 'Conversation'
-       }
-
-    ]
   },
   { timestamps: true }
 )
