@@ -53,7 +53,7 @@ export const login = async (req: Request, res: Response) => {
         error: true,
       });
     }
-    const user = await User.findOne(email);
+    const user = await User.findOne({email});
     if (!user) {
       return res
         .status(404)
