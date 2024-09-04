@@ -18,7 +18,7 @@ export const register = async (req: Request, res: Response) => {
         error: true,
       });
     }
-    const user = await User.findOne(email);
+    const user = await User.findOne({email});
     if (user) {
       return res.status(409).json({
         message: "User already exists",
@@ -73,8 +73,13 @@ export const login = async (req: Request, res: Response) => {
       email: user.email,
     };
     const token = await jwt.sign(tokenPayload, process.env.JWT_KEY!, {
-      expiresIn: "1d",
+      expiresIn: "14d",
     });
+    res.cookie("token", token, {
+      maxAge: 15 * 24 * 60 * 60 * 1000,
+      httpOnly: true, 
+      sameSite: "strict", 
+     });
 
     return res.status(200).json({
       message: "User logged in successfully",
@@ -114,7 +119,7 @@ export const userDetails = async (req: CustomRequest, res: Response) => {
 };
 
 //logout User
-export const logout = async (res: Response) => {
+export const logout = async (req: Request, res: Response) => {
   try {
     res.clearCookie("token");
     return res
