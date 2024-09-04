@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { login, logout, register, userDetails } from '../controllers/userController'
 import authGuard from '../middleware/authGuard';
-import { ai, getConversation } from '../controllers/ConversationController';
+import { ai, getConversation, newMessage } from '../controllers/ConversationController';
 const router=Router()
 
 //create user api
@@ -13,9 +13,9 @@ router.get("/logout", logout);
 //get details user
 router.get("/user-details",authGuard,userDetails);
 //get Conversation by user
-router.get("/user-details",authGuard,getConversation);
+router.get("/Conversations",authGuard,getConversation);
 //new message
-router.post("/new-message",authGuard, getConversation);
+router.post("/new-message",authGuard, newMessage);
 //ai Response
 router.post("/ai", authGuard,ai);
 
