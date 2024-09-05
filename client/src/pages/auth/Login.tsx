@@ -4,7 +4,6 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import logo from "../../assets/ai.png";
 import {useLogin} from "../../hooks/useAuth";
-import toast from "react-hot-toast";
 import { Helmet } from "react-helmet-async";
 
 const LoginSchema = Yup.object().shape({
@@ -15,12 +14,8 @@ const LoginSchema = Yup.object().shape({
 const Login = () => {
   const { loading, login } = useLogin();
 
-  const handleLogin = async (values: { email: string; password: string }) => {
-    try {
-      await login(values);
-    } catch (error:unknown) {
-      toast.error(error.message!);
-    }
+  const handleLogin = (values: { email: string; password: string }) => {
+    login(values);
   };
 
   return (
