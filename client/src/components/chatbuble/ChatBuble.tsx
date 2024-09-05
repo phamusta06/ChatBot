@@ -1,25 +1,31 @@
 import logo from "../../assets/ai.png";
-type contentType = {
-  content: string;
+
+type ContentType = {
+  contentBuble: string;
   userId: string;
 };
-export const ChatBuble = (props: contentType) => {
+
+export const ChatBuble = (props: ContentType) => {
+  const botId = import.meta.env.VITE_BOT;
+
+   
+
   return (
-    <div className=" ">
-      {props.userId !== import.meta.env.BOT_ID ? (
-        <div className="flex justify-end   ">
-          <div className="flex items-center bg-white shadow-sm rounded-xl p-2 gap-1 flex-row-reverse  ">
-            <p className="text-black text-lg px-3  ">{props.content}</p>
+    <div>
+      {props.userId !== botId ? (
+        <div className="flex justify-end">
+          <div className="flex items-center bg-white shadow-sm rounded-xl p-2 gap-1 flex-row-reverse">
+            <p className="text-black text-lg px-3">{props.contentBuble}</p>
           </div>
         </div>
-      ) : (props.content.length!==0 &&
-    (    <div className="flex justify-start    gap-2">
-          <img src={logo} className="w-8 rounded-full h-8" />
-          <div className="flex items-center  rounded-xl p-2 gap-1  ">
-            <p className="text-black text-lg">{props.content}</p>
+      ) : (props.contentBuble.length !== 0 && (
+        <div className="flex justify-start gap-2">
+          <img src={logo} className="w-8 rounded-full h-8" alt="Bot Logo" />
+          <div className="flex items-center p-2 gap-1">
+            <p className="text-black text-lg">{props.contentBuble}</p>
           </div>
-        </div>)
-      )}
+        </div>
+      ))}
     </div>
   );
 };
