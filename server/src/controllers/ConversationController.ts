@@ -16,12 +16,14 @@ export const getConversation = async (req: CustomRequest, res: Response) => {
             participants: userId
         }).sort({ updatedAt: -1 }).populate('messages');
 
-        const conversations = userConversations.map((conv) => ({
-            _id: conv._id,
-            messages: conv.messages || [],
-            createdAt: conv.createdAt,
-            titleMsg: conv.messages[0] || null
-        }));
+        const conversations = userConversations.map((conv) => {
+            return {
+                _id: conv?._id,
+                messages: conv?.messages || [],  
+                createdAt: conv?.createdAt,
+                titleMsg: conv?.messages[1]||conv?.messages[0] || null
+            };
+        });
 
         return res.status(200).json({ conversations, success:true });
     } catch (err) {
@@ -36,22 +38,22 @@ export const newMessage = async (req: Request, res: Response) => {
         conversationId,
         sender,
         recipient,
-        message,
-        userId
+        content,
+        
     } = req.body;
 
     try {
         let conversation = await Conversation.findById(conversationId).populate('messages');
-        if (message&&!conversation) {
+        if (content&&!conversation) {
             const createConversation = new Conversation({
-                participants: [userId,process.env.BOT_ID],
-                messages: []
+                participants: [sender,recipient],
+                content: []
             });
             conversation = await createConversation.save();
         }
-        if (message) {
+        if (content) {
             const newMessage = new Message({
-                content:message,
+                content,
                 sender: sender  ,
                 recipient:recipient
             });
