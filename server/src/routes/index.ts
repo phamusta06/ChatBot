@@ -17,7 +17,7 @@ router.get("/Conversations",authGuard,getConversation);
 //new message
 router.post("/new-message",authGuard, newMessage);
 //ai Response
-router.post("/ai", authGuard,ai);
+router.post("/ai",ai);
 
 
 
