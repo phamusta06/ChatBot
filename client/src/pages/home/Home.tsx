@@ -1,87 +1,40 @@
 import { ArrowRight, ArrowUp, ChevronUp, MessagesSquare } from "lucide-react";
-import { useContext, useEffect, useState } from "react";
-import axios from "axios";
-import { NavLink,useNavigate } from "react-router-dom";
-import { UserContext } from "../../context/userContext";
+import { FormEvent, useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useUserContext } from "../../context/userContext";
 import CardRecent from "../../components/cardRecent/CartRecent";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion} from "framer-motion";
 import HistoryEmpty from "../../components/historyEmpty/HistoryEmpty";
-import {useNewMessage} from "../../hooks/useConversations";
-
-const urlApi: string = import.meta.env.VITE_API_URL;
+import { ConversationType } from "../../types/types";
+import { useNewMessage } from "../../hooks/useConversations";
 
 export const Home = () => {
-  const {
-      handleMessage,
-  } = useNewMessage();
-
   const [areaValue, setAreaValue] = useState<string>("");
-  const navigate = useNavigate();
-  const CurrentUserContext = useContext(UserContext);
   const [showConversation, setShowConversation] = useState<boolean>(true);
-  const { user, setUser } = CurrentUserContext;
- 
-
-  
-
- 
-
-  // const { data: dataConversation, isSuccess: succesConversation } =
-  //   useQuery<any>({
-  //     queryKey: ["conversations"],
-  //     queryFn: async () => {
-  //       return await axios.post(
-  //         `${urlApi}/conversation`,
-  //         {
-  //           userId: currentUser?._id,
-  //         },
-  //         { withCredentials: true }
-  //       );
-  //     },
-  //     refetchOnWindowFocus: false,
-  //     enabled: !!successUser,
-  //     refetchOnMount: false,
-  //     gcTime: 1000 * 60 * 2,
-  //   });
-  // useEffect(() => {
-  //   if (currentUser?._id && successUser) {
-  //     setUser({
-  //       id: currentUser._id,
-  //       name: currentUser?.name,
-  //     });
-  //   }
-  //   if (dataConversation && succesConversation) {
-  //     setUser({
-  //       ...user,
-  //       conversations: dataConversation?.data,
-  //     });
-  //   }
-  // }, [dataConversation, currentUser?._id]);
-
-  // const handleSendMessage = async (e:any) => {
-  //   e.preventDefault();
-  //   const dataMessage = await handleMessage({
-  //     userId: user?.id,
-  //     conversationId: "66a91be2383ec19601549e73",
-  //     text: areaValue,
-  //   });
-
-  //   navigate(`/chat/${dataMessage?._id}`);
-  // };
-
+  const navigate = useNavigate();
+  const { handleMessage } = useNewMessage();
+  const { user } = useUserContext();
+  const handleSendMessage = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const dataMessage = await handleMessage({
+      sender: user?.id,
+      recipient: import.meta.env.VITE_BOT,
+      conversationId: import.meta.env.VITE_CONVIRTAION_ID,
+      content: areaValue,
+    });
+    navigate(`chat/${dataMessage?._id}`);
+  };
 
   return (
-    <div className="min-h-[100vh]  w-full">   
-    <div className="flex flex-col gap-6 pt-20 min-h-screen max-w-[750px] mx-auto w-full py-3 px-1 ">
+    <div className="min-h-[100vh]  w-full">
+      <div className="flex flex-col gap-6 pt-20 min-h-screen max-w-[750px] mx-auto w-full py-3 px-1 ">
         <div className="flex justify-center items-center  w-full ">
           <h1 className="text-3xl  text-center font-serif text-gray-800  ">
             Welcome {user?.name}
           </h1>
         </div>
         {/* input message */}
-        <form 
-        // onSubmit={handleSendMessage}
-        >
+        <form onSubmit={handleSendMessage}>
           <div className="relative bg-white w-full rounded-3xl overflow-hidden p-2 pr-10 shadow-sm">
             {areaValue && (
               <button
@@ -132,29 +85,31 @@ export const Home = () => {
           </div>
           {/* show Cards */}
           {user?.conversations?.length != 0 ? (
-            <AnimatePresence>
+            <>
               {showConversation && (
                 <div className="grid grid-cols-3 gap-3 flex-wrap w-full ">
-                  {user?.conversations?.slice(0,6).map((item: any, index: number) => (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.8 }}
-                      transition={{ duration: 0.3, delay: index * 0.05 }}
-                    >
-                      <CardRecent
-                        size={9}
-                        icon={true}
-                        content={item}
-                        time={item?.createdAt}
-                        id={item._id}
-                      />
-                    </motion.div>
-                  ))}
+                  {user?.conversations
+                    ?.slice(0, 6)
+                    .map((item: ConversationType, index: number) => (
+                      <motion.div
+                        key={index}
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.8 }}
+                        transition={{ duration: 0.3, delay: index * 0.05 }}
+                      >
+                        <CardRecent
+                          size={9}
+                          icon={true}
+                          content={item}
+                          time={item?.createdAt}
+                          id={item._id}
+                        />
+                      </motion.div>
+                    ))}
                 </div>
               )}
-            </AnimatePresence>
+            </>
           ) : (
             showConversation && <HistoryEmpty size={100} />
           )}
