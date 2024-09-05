@@ -3,18 +3,12 @@ import { NavLink } from "react-router-dom";
 import CardRecent from "../../components/cardRecent/CartRecent";
 import { InputSearch } from "./InputSearch";
 import HistoryEmpty from "../../components/historyEmpty/HistoryEmpty";
-import { useContext  } from "react";
-import { UserContext } from "../../context/userContext";
+import { useUserContext } from "../../context/userContext";
+import { ConversationType } from "../../types/types";
  
 export const History = () => {
+  const { user } = useUserContext()
   
-  const CurrentUserContext = useContext(UserContext);
-  const { user } = CurrentUserContext;
- 
-    
-
-  
-
   return (
     <div className="relative flex justify-center w-full">
       <div className="flex flex-col gap-6  min-h-screen max-w-[750px] mx-auto w-full  mt-14">
@@ -32,7 +26,7 @@ export const History = () => {
           <p className="font-serif text-3xl  text-center">Your chat history</p>
           <InputSearch />
           {user?.conversations ? (
-            user?.conversations?.map((conversation: any, index: number) => (
+            user?.conversations?.map((conversation:ConversationType, index: number) => (
               <CardRecent
                 key={index}
                 content={conversation}
