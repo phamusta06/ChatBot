@@ -2,12 +2,13 @@ import { MessagesSquare } from "lucide-react";
 import { FC } from "react";
 import { formatDistanceToNowStrict, parseISO } from "date-fns";
 import { useNavigate } from "react-router-dom";
+import {  ConversationType} from "../../types/types";
  
-interface CartRecentProps {
+interface CartRecentProps  {
   size: number;
   icon?: boolean;
-  content?: any;
-  time?: string;
+  content?: ConversationType;
+  time?: string|Date;
   id: string;
 }
 
@@ -28,9 +29,9 @@ const CartRecent: FC<CartRecentProps> = ({ size, content, time, icon, id }) => {
         <MessagesSquare className="w-4 text-black/70" />
       </div>
       <h2 className="font-semibold text-sm text-black/90">
-        {content?.titletMsg?.text.substring(0,60)}
+      {content?.titleMsg?.content ? content.titleMsg.content.substring(0, 60) : ""}
       </h2>
-      <p className="text-gray-400">{time ? convertToDaysAgo(time) : ""}</p>
+      <p className="text-gray-400">{time ? convertToDaysAgo(time.toString()) : ""}</p>
     </div>
   );
 };
